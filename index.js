@@ -1,15 +1,17 @@
 $(document).ready(function () {
     var currentQuestion;
     var timeLeft = 10;
-
     // Define global interval variable at the top
     var interval;
+    // Add this after declaring timeLeft
+    var score = 0;
 
     var startGame = function () {
         if (!interval) {
-            // call the updateTimeLeft function if timeLeft is 0
             if (timeLeft === 0) {
                 updateTimeLeft(10);
+                // Add the following
+                updateScore(-score);
             }
             interval = setInterval(function () {
                 updateTimeLeft(-1);
@@ -19,7 +21,7 @@ $(document).ready(function () {
                 }
             }, 1000);
         }
-    }
+    };
 
     // Call start game in the event listener callback
     $('#user-input').on('keyup', function () {
@@ -49,8 +51,13 @@ $(document).ready(function () {
     });
 
     var checkAnswer = function (userInput, answer) {
-        console.log(userInput === answer);
-    }
+        if (userInput === answer) {
+            renderNewQuestion();
+            $('#user-input').val('');
+            updateTimeLeft(+1);
+            updateScore(+1);
+        }
+    };
 
     $('#user-input').on('keyup', function () {
         checkAnswer(Number($(this).val()), currentQuestion.answer);
@@ -90,5 +97,10 @@ $(document).ready(function () {
         timeLeft += amount;
         $('#time-left').text(timeLeft);
     }
+
+    var updateScore = function (amount) {
+        score += amount;
+        $('#score').text(score);
+    };
 });
 
